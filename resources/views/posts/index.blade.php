@@ -27,7 +27,7 @@
       <th scope="row">{{ $post->id }}</th>
       <td>{{ $post->title }}</td>
       <td>{{ isset($post->user) ? $post->user->name : 'Not Found' }}</td>
-          
+      
       <td>
       {{ $created_at = $Carbon::parse($post->created_at)->format('Y-m-d')}}
       </td>
@@ -50,7 +50,7 @@
 </table>
 
 <ul class="pagination">
-{{ $allPosts->render() }}
+{{ $allPosts->render() }} 
 </ul>
 @endsection
 

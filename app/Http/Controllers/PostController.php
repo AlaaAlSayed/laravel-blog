@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
+
 use App\Models\Post;
 use App\Models\User;
 
@@ -29,10 +33,20 @@ class PostController extends Controller
     }
 
 
-    public function store()
-    {
+    public function store( StorePostRequest $request)
+    { 
+        
+        // request()->validate([
+        //     'title' => ['required', 'min:3'],
+        //     'description' => ['required', 'min:5'],
+        // ],[
+        //     'title.required' => 'must enter title',
+        //     'title.min' => 'the min title is 3'
+        // ]);
+
+
         //the logic to store post in the db
-        $data = request()->all();
+        $data = $request->all();
 
         // Post::create($data);
         Post::create([
@@ -69,24 +83,25 @@ class PostController extends Controller
         ]);
     }
 
-    public function update($postId)
+    public function update($postId ,UpdatePostRequest $request)
     {
-        $data = request()->all();
+        $data = $request->all();
 
         // query in db update table set ()=() where id = $postId
-         $post = Post :: where('id', $postId)-> update([
+          Post :: where('id', $postId)-> update([
             'title' => $data['title'],
             'description' => $data['description'],
             'user_id' => $data['post_creator'],
         ]);
-        return redirect()->route('posts.show',$post);
+       
+        return redirect()->route('posts.show',$postId);
     }
 
     public function destroy($postId)
     {
         // query in db select * from posts where id = $postId
         $deleted = Post :: where('id', $postId)->delete();
-        dd($deleted);
+        // dd($deleted);
         // return $postId;
         return redirect()->route('posts.index');
 
