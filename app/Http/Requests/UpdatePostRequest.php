@@ -23,11 +23,15 @@ class UpdatePostRequest extends FormRequest
      */
     public function rules()
     {
+        // Title & description are required , minimum length for title is 3
+        // chars and unique, for description the minimum length is 10
+        // chars ,
+        // Also make sure that no one hacks you and send an id of post
+        // creator that doesn’t exist in the database
         return [
 
             'title' => ['required', 'min:3'],
-            'description' => ['required', 'min:5'],
-
+            'description' => ['required', 'min:10'],
         ];
     }
     public function messages()

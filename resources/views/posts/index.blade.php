@@ -32,7 +32,7 @@
       {{ $created_at = $Carbon::parse($post->created_at)->format('Y-m-d')}}
       </td>
 
-      <td class="d-flex ">
+      <td class="d-flex  justify-content-between ">
         <a href="{{route('posts.show',$post->id)}}" class="btn btn-primary">View</a>
         <a href="{{route('posts.edit',$post->id)}}" class="btn btn-info">Edit</a>
         

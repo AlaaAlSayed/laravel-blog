@@ -16,7 +16,7 @@ class PostController extends Controller
 
     public function index()
     {
-        $allPosts = Post::simplePaginate(2); //to retrieve all records
+        $allPosts = Post::simplePaginate(7); //to retrieve all records
 
         return view('posts.index', [
             'allPosts' => $allPosts,
@@ -33,9 +33,9 @@ class PostController extends Controller
     }
 
 
-    public function store( StorePostRequest $request)
-    { 
-        
+    public function store(StorePostRequest $request)
+    {
+
         // request()->validate([
         //     'title' => ['required', 'min:3'],
         //     'description' => ['required', 'min:5'],
@@ -48,14 +48,18 @@ class PostController extends Controller
         //the logic to store post in the db
         $data = $request->all();
 
-        // Post::create($data);
-        Post::create([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'user_id' => $data['post_creator'],
+        if (isset($data)) {
+            $user = User::where('id', $data['post_creator'])->get()->first();
+            if ($user) {
+                // Post::create($data);
+                Post::create([
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                    'user_id' => $data['post_creator'],
 
-        ]);
-
+                ]);
+            }
+        }
         return redirect()->route('posts.index');
     }
 
@@ -82,30 +86,39 @@ class PostController extends Controller
             'users' => $users
         ]);
     }
-
-    public function update($postId ,UpdatePostRequest $request)
+    // Integrity constraint violation:  a foreign key constraint fails 
+    // 
+    public function update($postId, UpdatePostRequest $request)
     {
         $data = $request->all();
 
-        // query in db update table set ()=() where id = $postId
-          Post :: where('id', $postId)-> update([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'user_id' => $data['post_creator'],
-        ]);
-       
-        return redirect()->route('posts.show',$postId);
+        // make sure when updating post without changing Title it still works
+        if (isset($data)) {
+
+            $user = User::where('id', $data['post_creator'])->get()->first();
+
+            if ($user) {
+                // query in db update table where id = $postId
+                Post::where('id', $postId)->update([
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                    'user_id' => $data['post_creator'],
+                ]);
+            }
+        } else {
+
+            $data = Post::where('id', $postId)->get()->first();
+        }
+
+        return redirect()->route('posts.show', $postId);
     }
 
     public function destroy($postId)
     {
         // query in db select * from posts where id = $postId
-        $deleted = Post :: where('id', $postId)->delete();
+        $deleted = Post::where('id', $postId)->delete();
         // dd($deleted);
         // return $postId;
         return redirect()->route('posts.index');
-
     }
-
-   
 }
