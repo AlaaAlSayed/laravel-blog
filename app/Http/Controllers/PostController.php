@@ -9,14 +9,16 @@ use App\Http\Requests\UpdatePostRequest;
 
 use App\Models\Post;
 use App\Models\User;
-
+use \Cviebrock\EloquentSluggable\Services\SlugService;
+use DB;
 
 class PostController extends Controller
 {
 
     public function index()
     {
-        $allPosts = Post::simplePaginate(7); //to retrieve all records
+
+        $allPosts = Post::simplePaginate(4); //to retrieve all records
 
         return view('posts.index', [
             'allPosts' => $allPosts,
@@ -43,7 +45,7 @@ class PostController extends Controller
         //     'title.required' => 'must enter title',
         //     'title.min' => 'the min title is 3'
         // ]);
-
+       
 
         //the logic to store post in the db
         $data = $request->all();
@@ -56,7 +58,6 @@ class PostController extends Controller
                     'title' => $data['title'],
                     'description' => $data['description'],
                     'user_id' => $data['post_creator'],
-
                 ]);
             }
         }
@@ -67,6 +68,7 @@ class PostController extends Controller
     {
         //query in db select * from posts where id = $postId
         $post = Post::where('id', $postId)->get()->first();
+        
 
         return view('posts.show', [
             'post' => $post,
@@ -90,7 +92,9 @@ class PostController extends Controller
     // 
     public function update($postId, UpdatePostRequest $request)
     {
-        $data = $request->all();
+     
+        //the logic to store post in the db
+        $data = $request->only ( 'title','description','post_creator');//validated();
 
         // make sure when updating post without changing Title it still works
         if (isset($data)) {
@@ -103,7 +107,9 @@ class PostController extends Controller
                     'title' => $data['title'],
                     'description' => $data['description'],
                     'user_id' => $data['post_creator'],
+                    
                 ]);
+         
             }
         } else {
 

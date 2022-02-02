@@ -28,10 +28,17 @@ class UpdatePostRequest extends FormRequest
         // chars ,
         // Also make sure that no one hacks you and send an id of post
         // creator that doesn’t exist in the database
+        
+        //for terminal : 
+        // php artisan make:request StorePostRequest
+        // php artisan make:request UpdatePostRequest
+      
         return [
 
             'title' => ['required', 'min:3'],
             'description' => ['required', 'min:10'],
+            'post_creator'=>'',
+            'slug' => 'max:0',
         ];
     }
     public function messages()
@@ -39,6 +46,7 @@ class UpdatePostRequest extends FormRequest
         return [
             'title.required' => 'A title is required',
             'description.required' => 'description is required',
+            'slug' => 'Dont hack me',
         ];
     }
 }
