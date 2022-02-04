@@ -42,6 +42,8 @@ class Post extends Model
     // php artisan make:migration add_slug_to_posts_table --table=posts
     // edit col in vs -> new created migration 
     // php artisan migrate
+
+
     use Sluggable;
     function sluggable(): array
     {

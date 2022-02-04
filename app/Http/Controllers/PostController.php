@@ -107,6 +107,7 @@ class PostController extends Controller
                     'title' => $data['title'],
                     'description' => $data['description'],
                     'user_id' => $data['post_creator'],
+                    
                 ]);
          
             }
