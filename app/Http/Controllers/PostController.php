@@ -18,10 +18,14 @@ class PostController extends Controller
     public function index()
     {
 
-        $allPosts = Post::simplePaginate(4); //to retrieve all records
-
+        // $allPosts = Post::simplePaginate(4); //to retrieve all records
+        
+        $allPosts = Post::with('user')->paginate(2);
+        
+        // $Pages = Post::simplePaginate(4)->with('user')->get();
         return view('posts.index', [
             'allPosts' => $allPosts,
+            // 'pages'=>$Pages,
         ]);
     }
 

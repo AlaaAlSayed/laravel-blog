@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use Laravel\Socialite\Facades\Socialite;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,16 +48,30 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 
-// auth.google
-
+// auth.github
 Route::get('/auth/redirect', function () {
-    return Socialite::driver('github')->stateless()->redirect();
+    return Socialite::driver('github')->redirect();
 })->name('auth.github');
 
 
 Route::get('/auth/callback', function () {
-    $user = Socialite::driver('github')->stateless()->user();
-    dd($user);
+    $githubUser = Socialite::driver('github')->user();
+    // dd($githubUser);
+
+    $user = User::where('email', $githubUser->email)->first();
+    
+    if ($user === null) {
+        $user = User::create([
+            'name' => $githubUser->name,
+            'email' => $githubUser->email,
+            'password' => $githubUser->token,
+            'remember_token' => $githubUser->token,
+            // 'github_refresh_token' => $githubUser->refreshToken,
+        ]);
+    }
+ 
+    Auth::login($user);
+    return redirect('/posts');
    
 });
 
@@ -68,13 +81,26 @@ Route::get('/auth/callback', function () {
 // https://support.google.com/cloud/answer/6158849?hl=en#zippy=
 
 Route::get('/google/auth/redirect', function () {
-    return Socialite::driver('google')->stateless()->redirect();
+    return Socialite::driver('google')->redirect();
 })->name('auth.google');
 
 Route::get('/google/auth/callback', function () {
 
-    $user = Socialite::driver('google')->stateless()->user();
-    dd($user);
-    // return redirect()->route('posts.index');
+    $googleUser = Socialite::driver('google')->user();
+   
+    $user = User::where('email', $googleUser->email)->first();
+    
+    if ($user === null) {
+        $user = User::create([
+            'name' => $googleUser->name,
+            'email' => $googleUser->email,
+            'password' => $googleUser->token,
+            'remember_token' => $googleUser->token,
+           
+        ]);
+    }
+ 
+    Auth::login($user);
+    return redirect('/posts');
    
 });

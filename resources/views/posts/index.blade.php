@@ -29,6 +29,7 @@
       <td>{{ $post->slug}}</td>
       <td>{{ isset($post->user) ? $post->user->name : 'Not Found' }}</td>
       
+      
       <td>
       {{ $created_at = $Carbon::parse($post->created_at)->format('Y-m-d')}}
       </td>
@@ -50,9 +51,13 @@
   </tbody>
 </table>
 
+
 <ul class="pagination">
-{{ $allPosts->render() }} 
+
+{{$allPosts->render()}}
+
 </ul>
+
 @endsection
 
 @section('script')
